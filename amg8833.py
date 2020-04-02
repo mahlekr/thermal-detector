@@ -139,3 +139,6 @@ while True:
         lcd.blit(text,(0,0))     
 
     pygame.display.update()
+
+# GPIO cleanup
+GPIO.cleanup()
