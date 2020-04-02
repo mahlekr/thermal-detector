@@ -7,18 +7,44 @@ import adafruit_amg88xx
 import numpy as np
 import pygame
 from scipy.interpolate import griddata
-from pygame import mixer
+##from pygame import mixer # mp3 file player
 from colour import Color
+import RPi.GPIO as GPIO
 
+# GPIO setup
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(12, GPIO.OUT)
+GPIO.output(12, True)
+p = GPIO.PWM(12, 1920) # channel=12, frequency 1920Hz
+p.start(0)
+
+# play sound
+def ok():
+    p.start(10)
+    p.ChangeFrequency(659) # frequency  
+    time.sleep(0.1)
+    p.ChangeFrequency(523)
+    time.sleep(0.14)
+    p.stop()
+
+def warning():
+    p.start(100)
+    time.sleep(0.5)
+    p.stop()
+    
 # sensor input
 i2c = busio.I2C(board.SCL, board.SDA)
 amg = adafruit_amg88xx.AMG88XX(i2c)
 
 #low range of the sensor (this will be blue on the screen)
 MINTEMP = 26.
+MIN_OK = 28
+MIN_WARNING = 31 
 
 #high range of the sensor (this will be red on the screen)
 MAXTEMP = 32.
+MAX_OK = 31
+MAX_WARNING = 42
 
 #how many color values we can have
 COLORDEPTH = 1024
@@ -81,16 +107,12 @@ while True:
     print('temperature:', temp)
 
     # play sound
-    if int(temp) in range(28,32):
-        mixer.init()
-        mixer.music.load('OK.mp3')
-        mixer.music.play()
-    elif int(temp) in range(32,42):
-        mixer.init()
-        mixer.music.load('WARN.mp3')
-        mixer.music.play()
+    if int(temp) in range(MIN_OK,MAX_OK):
+        ok()
+    elif int(temp) in range(MIN_WARNING,MAX_WARNING):
+        warning()
     else:
-        print ("Temperature is NOT detected")
+        print ("Temperature is out of range")
 
     #read the pixels
     pixels = []
@@ -109,11 +131,11 @@ while True:
                               displayPixelHeight, displayPixelWidth))
 
     # display text
-    if int(temp) in range(28,32):
+    if int(temp) in range(28,31):
         text = font.render('OK', False, (255,255,255))
         lcd.blit(text,(0,0))
-    elif int(temp) in range(32,42):
-        text = font.render('WARN', False, (255,0,0))
+    elif int(temp) in range(31,42):
+        text = font.render('WARNING', False, (255,0,0))
         lcd.blit(text,(0,0))     
 
     pygame.display.update()
