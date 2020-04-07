@@ -39,11 +39,11 @@ amg = adafruit_amg88xx.AMG88XX(i2c)
 #low range of the sensor (this will be blue on the screen)
 MINTEMP = 26.
 MIN_OK = 28
-MIN_WARNING = 31 
+MIN_WARNING = 30 
 
 #high range of the sensor (this will be red on the screen)
 MAXTEMP = 32.
-MAX_OK = 31
+MAX_OK = 30
 MAX_WARNING = 42
 
 #how many color values we can have
