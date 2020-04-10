@@ -131,10 +131,10 @@ while True:
                               displayPixelHeight, displayPixelWidth))
 
     # display text
-    if int(temp) in range(28,31):
+    if int(temp) in range(MIN_OK,MAX_OK):
         text = font.render('OK', False, (255,255,255))
         lcd.blit(text,(0,0))
-    elif int(temp) in range(31,42):
+    elif int(temp) in range(MIN_WARNING,MAX_WARNING):
         text = font.render('WARNING', False, (255,0,0))
         lcd.blit(text,(0,0))     
 
